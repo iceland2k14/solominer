@@ -136,7 +136,7 @@ def BitcoinMiner(restart=False):
 
 
 
-        if hash >= target :
+        if hash < target :
             print('[*] New block mined')
             logg('[*] success!!')
             logg(blockheader)
