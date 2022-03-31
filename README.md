@@ -1,53 +1,18 @@
 # solominer
 Solo Mining in python for BTC Block Reward, Pure luck
 
-10 Million nonce is checked to see if you could accidently solve the mining problem in 1 thread using Python and Get BTC Block Reward. 
+This is a solominer random nonences between 0-4294967295 are checked to see if you could accidently solve the mining problem in 1 thread using Python and Get BTC Block Reward, this miner requests job from solockpool and start hashing the block header using random noncences, while a new block is detected on network, the miner restarts automatically in order to request new job from ckpool. 
+
 It is based on Luck giving so much hashrate all around the world, but still possible.
 
-The Script will display those hash having more than 5 zeros in the beginning. Although the current difficulty for getting mining reward is 17 zeros. 
+The Script will display those hash having more than 7 zeros in the beginning. Although the current difficulty for getting mining reward is 17 zeros. All events is stored in a file called miner.log. 
 Good Luck !!
 
+You should replace the existing bitcoin adress in solo_miner.py with your own bitcoin address.
+
 ```
-(base) C:\anaconda3>python solo_miner.py
-address:1Q1Ten9ASaVMswFmvu64spJi96SojHCNWv nonce:d8a5f0ce
-host:solo.ckpool.org port:3333
-[{'id': None,
-  'method': 'mining.notify',
-  'params': ['5eebeafb00056bf1',
-             '2341b4b45130c2dcd71b5125669a4b420aed971a0000a0450000000000000000',
-             '01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff35038c2c0a000441f60660041cb29a230c',
-             '0a636b706f6f6c112f736f6c6f2e636b706f6f6c2e6f72672fffffffff0348585f2b000000001976a914fc6123f4bfd3a840b4387ab90e9801e98fb17cf888ac4f99e200000000001976a914f4cbe6c6bb3a8535c963169c22963d3a20e7686988ac0000000000000000266a24aa21a9edd00699d3cfb933ea6f2c37af71445ea2f9f629357d20431df2257351a16d6c3100000000',
-             ['66422ab9aeec34851fe5f6af7c67742964ea0aa24a1bc2569c0c5352ac4584fa',
-              'df36b9cd750b7880a62a1a6137b5d1491d1a65c7dc8dd12e152a31fe9078e527',
-              '241f33dd7641db547a7103d011a89a45de980fcd8a11a3ec01c27cc6a644921c',
-              '86b60edfe924c90d555cbd49c1d89c1f4f6c6e21f4689d8ababcbbba597a7309',
-              '55ef7f1e9c823f92990138c7f20153d65131068d1579bad2debbdf8fa2b3351e',
-              'f753abddf47afb7fd18acf21d8e87905a793042028a8a7e0b9da5c784fc263a9',
-              '44252d2c07fc54cddc59ea774829c1607c8f6cad34cbea9e7eaa1d8c5789c3d7',
-              'eb4ebfe3a4529a5e867a3dfa4fbdaec7e8740afea609514e042226900af84603',
-              '8802b964474a87ead205b50bf02cb039f378dc889b0cebe931a6db2ff32dee2d',
-              '9bef95a1e028a485bf2aeb2a9cb6ed3b89a30292961577aabea2725f45abb4bf',
-              '31b9eb9cfd4ff874f91bce8136d0193015b08ab30813b344a8f06da9e05e037e',
-              'cef0a89bebe65e3b1785a2395cd895943af99f1945e25df09c41410bbcaf16d1'],
-             '20000000',
-             '170da8a1',
-             '6006f641',
-             True]}]
-nbits:170da8a1 target:0000000000000000000da8a10000000000000000000000000000000000000000
+python solo_miner.py
+[*] Bitcoin Miner Started
 
-coinbase:
-01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff35038c2c0a000441f60660041cb29a230cc251c062000000005a9530680a636b706f6f6c112f736f6c6f2e636b706f6f6c2e6f72672fffffffff0348585f2b000000001976a914fc6123f4bfd3a840b4387ab90e9801e98fb17cf888ac4f99e200000000001976a914f4cbe6c6bb3a8535c963169c22963d3a20e7686988ac0000000000000000266a24aa21a9edd00699d3cfb933ea6f2c37af71445ea2f9f629357d20431df2257351a16d6c3100000000
-
-coinbase hash:b'5261ef9773b69709288cf06e7b6268f3894f5a58581a81c2eeb41555052c3269'
-
-merkle_root:48be309d2557405817da80363d8fa7678a414ee57cbb2f29e6cc007d687b8db1
-
-hash: 00000e852db967a42a38ef23e2ca9ae786bb479670b7351d8f7763f9281fb343
-hash: 00000ab2a4378beb85434b2f52b4f1e962081b5b99400d504460aa3d15149c45
-hash: 00000ee49f8a7b73cfc7dd7a4dcc7d68f17e491f38296782b83f0cb98132e7b9
-hash: 000001ddd5858c18523c9dead49f5bef2ed7e697a1bb86bb28159d85fb7db131
-hash: 0000002bd08474b821894004d439845e6b2c9b090375026b667c1adb264738cf
-hash: 00000d0f9a4c8fde790398ffa648ec99fc25bf9519748e7c42ba0a7215b7ee0e
-hash: 000006b3079216c7cd5866858f7eccd7eb6186a3a71428072661e558b752c9df
-Finished 10M Search. You can re-attempt to try your luck for solo reward !!
 ```
+You can run it local on your pc or in aws instance, if you run it on aws for example you can setup a cronjob to run every 2-3 minutes in any case that miner stops to restart the miner. Good luck.
