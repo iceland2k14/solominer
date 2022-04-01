@@ -5,14 +5,24 @@ This is a solominer random nonences between 0-4294967295 are checked to see if y
 
 It is based on Luck giving so much hashrate all around the world, but still possible.
 
-The Script will display those hash having more than 7 zeros in the beginning. Although the current difficulty for getting mining reward is 17 zeros. All events is stored in a file called miner.log. 
-Good Luck !!
+The Script will store in miner.log file those hashes having more than 7 zeros in the beginning. Although the current difficulty for getting mining reward is 19 zeros. All events is stored in a file called miner.log. 
 
-You should replace the existing bitcoin adress in solo_miner.py with your own bitcoin address.
+### You should replace the existing bitcoin adress in solo_miner.py with your own bitcoin address.
 
+
+
+
+For local run in your pc 
 ```
-python solo_miner.py
+python3 solo_miner.py
 [*] Bitcoin Miner Started
 
 ```
+If you want to run it aws instance or vps server 
+```
+nohup python3 solo_miner.py &
+
+```
+
+
 You can run it local on your pc or in aws instance, if you run it on aws for example you can setup a cronjob to run every 2-3 minutes in any case that miner stops to restart the miner. Good luck.
