@@ -4,7 +4,7 @@
 # Distributed under the MIT/X11 software license, see the accompanying
 # file license http://www.opensource.org/licenses/mit-license.php.
 
-from pprint import pprint
+
 from signal import signal, SIGINT
 import context as ctx 
 import traceback 
@@ -108,8 +108,8 @@ class ExitedThread(threading.Thread):
 def bitcoin_miner(t, restarted=False):
 
     if restarted:
-        logg('Bitcoin Miner restarted')
-        time.sleep(5)
+        logg('[*] Bitcoin Miner restarted')
+        time.sleep(10)
 
 
 
@@ -132,6 +132,9 @@ def bitcoin_miner(t, restarted=False):
     work_on = get_current_block_height()
 
 
+    ctx.nHeightDiff[work_on+1] = 0 
+
+
 
     _diff = int("00000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF", 16)
 
@@ -142,7 +145,6 @@ def bitcoin_miner(t, restarted=False):
 
     logg('[*] Working to solve block with height {}'.format(work_on+1))
 
-    start = int(time.time())
 
 
     while True:
@@ -152,7 +154,7 @@ def bitcoin_miner(t, restarted=False):
 
         if ctx.prevhash != ctx.updatedPrevHash:
             logg('[*] New block {} detected on network '.format(ctx.prevhash))
-            logg('[*] Best difficulty will trying to solve block {} was'.format(work_on+1))
+            logg('[*] Best difficulty will trying to solve block {} was {}'.format(work_on+1, ctx.nHeightDiff[work_on+1]))
             ctx.updatedPrevHash = ctx.prevhash
             bitcoin_miner(t, restarted=True)
             break 
@@ -167,7 +169,7 @@ def bitcoin_miner(t, restarted=False):
 
 
 
-        
+        # Logg all hashes that start with 7 zeros or more
         if hash.startswith('0000000'): logg('[*] New hash: {} for block {}'.format(hash, work_on+1))
 
 
@@ -175,6 +177,12 @@ def bitcoin_miner(t, restarted=False):
         this_hash = int(hash, 16)
 
         difficulty = _diff / this_hash
+
+
+        if ctx.nHeightDiff[work_on+1] < difficulty:
+            # new best difficulty for block at x height
+            ctx.nHeightDiff[work_on+1] = difficulty
+
 
 
         if hash < target :
@@ -235,9 +243,6 @@ def block_listener(t):
 
 
 
-
-
-        
 
 
 class CoinMinerThread(ExitedThread):
