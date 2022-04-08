@@ -189,7 +189,7 @@ def bitcoin_miner(t, restarted=False):
             logg('[*] Block {} solved.'.format(work_on+1))
             logg('[*] Block hash: {}'.format(hash))
             logg('[*] Blockheader: {}'.format(blockheader))            
-            payload = bytes('{"params": ["'+address+'", "'+job_id+'", "'+extranonce2 \
+            payload = bytes('{"params": ["'+address+'", "'+ctx.job_id+'", "'+ctx.extranonce2 \
                 +'", "'+ctx.ntime+'", "'+nonce+'"], "id": 1, "method": "mining.submit"}\n', 'utf-8')
             logg('[*] Payload: {}'.format(payload))
             sock.sendall(payload)
