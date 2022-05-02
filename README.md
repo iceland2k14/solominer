@@ -1,7 +1,7 @@
 # solominer
 Solo Mining in python for BTC Block Reward, Pure luck
 
-This is a solominer random nonences between 0-4294967295 are checked to see if you could accidently solve the mining problem using Python and Get BTC Block Reward, this miner requests job from solockpool and start hashing the block header using random noncences, or regular noncences, while a new block is detected on network, the miner restarts automatically in order to request new job from ckpool, if a nonce is found the blockheader data is submited to ckpool  automatically. 
+This is a solominer random noncences between 0-4294967295 or regular noncences starting from 0 are checked to see if you could accidently solve the mining problem using Python and Get BTC Block Reward, this miner requests job from solockpool and start hashing the block header using random noncences, or regular noncences, while a new block is detected on network, the miner restarts automatically in order to request new job from ckpool, if a nonce is found the blockheader data is submited to ckpool  automatically. 
 
 It is based on Luck giving so much hashrate all around the world, but still possible.
 
