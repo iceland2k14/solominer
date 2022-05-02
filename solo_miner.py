@@ -39,8 +39,9 @@ def handler(signal_received, frame):
 
 def logg(msg):
     # basic logging 
-    logging.basicConfig(level=logging.INFO, filename="miner.log", format='%(asctime)s %(message)s') # include timestamp
+    logging.basicConfig(level=logging.INFO, filename="minerva.log", format='%(asctime)s %(message)s') # include timestamp
     logging.info(msg)
+
 
 
 
@@ -49,6 +50,17 @@ def get_current_block_height():
     # returns the current network height 
     r = requests.get('https://blockchain.info/latestblock')
     return int(r.json()['height'])
+
+
+def calculate_hashrate(nonce, last_updated):
+  if nonce % 1000000 == 999999:
+    now             = time.time()
+    hashrate        = round(1000000/(now - last_updated))
+    sys.stdout.write("\r%s hash/s"%(str(hashrate)))
+    sys.stdout.flush()
+    return now
+  else:
+    return last_updated
 
 
 
@@ -146,6 +158,9 @@ def bitcoin_miner(t, restarted=False):
     logg('[*] Working to solve block with height {}'.format(work_on+1))
 
 
+
+
+
     if len(sys.argv) > 1:
         random_nonce = False 
     else:
@@ -154,6 +169,10 @@ def bitcoin_miner(t, restarted=False):
     
 
     nNonce = 0 
+
+
+    last_updated = int(time.time())
+
 
 
 
@@ -198,6 +217,12 @@ def bitcoin_miner(t, restarted=False):
         if ctx.nHeightDiff[work_on+1] < difficulty:
             # new best difficulty for block at x height
             ctx.nHeightDiff[work_on+1] = difficulty
+        
+
+        if not random_nonce:
+            # hash meter, only works with regular nonce.
+            last_updated = calculate_hashrate(nNonce, last_updated)
+
 
 
 
@@ -331,4 +356,8 @@ def StartMining():
 
 if __name__ == '__main__':
     signal(SIGINT, handler)
+
+
+
+
     StartMining()
