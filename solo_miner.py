@@ -162,7 +162,7 @@ def bitcoin_miner(t, restarted=False):
 
 
         nonce   = hex(random.randint(0,2**32-1))[2:].zfill(8) # nNonce   #hex(int(nonce,16)+1)[2:]
-        blockheader = ctx.version + ctx.prevhash + merkle_root + ctx.nbits + ctx.ntime + nonce +\
+        blockheader = ctx.version + ctx.prevhash + merkle_root + ctx.ntime + + ctx.nbits + nonce +\
         '000000800000000000000000000000000000000000000000000000000000000000000000000000000000000080020000'
         hash = hashlib.sha256(hashlib.sha256(binascii.unhexlify(blockheader)).digest()).digest()
         hash = binascii.hexlify(hash).decode()
