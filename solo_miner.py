@@ -39,7 +39,7 @@ def handler(signal_received, frame):
 
 def logg(msg):
     # basic logging 
-    logging.basicConfig(level=logging.INFO, filename="minerva.log", format='%(asctime)s %(message)s') # include timestamp
+    logging.basicConfig(level=logging.INFO, filename="miner.log", format='%(asctime)s %(message)s') # include timestamp
     logging.info(msg)
 
 
