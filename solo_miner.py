@@ -146,6 +146,16 @@ def bitcoin_miner(t, restarted=False):
     logg('[*] Working to solve block with height {}'.format(work_on+1))
 
 
+    if len(sys.argv) > 1:
+        random_nonce = False 
+    else:
+        random_nonce = True
+
+    
+
+    nNonce = 0 
+
+
 
     while True:
         t.check_self_shutdown()
@@ -160,8 +170,14 @@ def bitcoin_miner(t, restarted=False):
             break 
 
 
+        if random_nonce:
+            nonce = hex(random.randint(0,2**32-1))[2:].zfill(8) # nNonce   #hex(int(nonce,16)+1)[2:]
+        else:
+            nonce = hex(nNonce)[2:].zfill(8)
 
-        nonce   = hex(random.randint(0,2**32-1))[2:].zfill(8) # nNonce   #hex(int(nonce,16)+1)[2:]
+
+
+
         blockheader = ctx.version + ctx.prevhash + merkle_root + ctx.ntime + ctx.nbits + nonce +\
         '000000800000000000000000000000000000000000000000000000000000000000000000000000000000000080020000'
         hash = hashlib.sha256(hashlib.sha256(binascii.unhexlify(blockheader)).digest()).digest()
@@ -196,6 +212,9 @@ def bitcoin_miner(t, restarted=False):
             ret = sock.recv(1024)
             logg('[*] Pool response: {}'.format(ret))
             return True
+        
+        # increment nonce by 1, in case we don't want random 
+        nNonce +=1
 
 
 
