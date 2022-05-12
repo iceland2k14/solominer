@@ -127,9 +127,9 @@ def bitcoin_miner(t, restarted=False):
 
 
     target = (ctx.nbits[2:]+'00'*(int(ctx.nbits[:2],16) - 3)).zfill(64)
-    extranonce2 = hex(random.randint(0,2**32-1))[2:].zfill(2*ctx.extranonce2_size)      # create random
+    ctx.extranonce2 = hex(random.randint(0,2**32-1))[2:].zfill(2*ctx.extranonce2_size)      # create random
 
-    coinbase = ctx.coinb1 + ctx.extranonce1 + extranonce2 + ctx.coinb2
+    coinbase = ctx.coinb1 + ctx.extranonce1 + ctx.extranonce2 + ctx.coinb2
     coinbase_hash_bin = hashlib.sha256(hashlib.sha256(binascii.unhexlify(coinbase)).digest()).digest()
 
     merkle_root = coinbase_hash_bin
@@ -233,8 +233,8 @@ def bitcoin_miner(t, restarted=False):
             payload = bytes('{"params": ["'+address+'", "'+ctx.job_id+'", "'+ctx.extranonce2 \
                 +'", "'+ctx.ntime+'", "'+nonce+'"], "id": 1, "method": "mining.submit"}\n', 'utf-8')
             logg('[*] Payload: {}'.format(payload))
-            sock.sendall(payload)
-            ret = sock.recv(1024)
+            ctx.sock.sendall(payload)
+            ret = ctx.sock.recv(1024)
             logg('[*] Pool response: {}'.format(ret))
             return True
         
@@ -265,6 +265,8 @@ def block_listener(t):
     ctx.job_id, ctx.prevhash, ctx.coinb1, ctx.coinb2, ctx.merkle_branch, ctx.version, ctx.nbits, ctx.ntime, ctx.clean_jobs = responses[0]['params']
     # do this one time, will be overwriten by mining loop when new block is detected
     ctx.updatedPrevHash = ctx.prevhash
+    # set sock 
+    ctx.sock = sock 
 
 
     while True:

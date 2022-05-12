@@ -20,4 +20,8 @@ clean_jobs = None
 
 sub_details = None 
 extranonce1 = None 
+extranonce2 = None
 extranonce2_size = None
+
+
+sock = None
