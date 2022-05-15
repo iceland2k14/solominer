@@ -45,10 +45,22 @@ def logg(msg):
 
 
 
+
 def get_current_block_height():
     # returns the current network height 
     r = requests.get('https://blockchain.info/latestblock')
     return int(r.json()['height'])
+
+
+def calculate_hashrate(nonce, last_updated):
+  if nonce % 1000000 == 999999:
+    now             = time.time()
+    hashrate        = round(1000000/(now - last_updated))
+    sys.stdout.write("\r%s hash/s"%(str(hashrate)))
+    sys.stdout.flush()
+    return now
+  else:
+    return last_updated
 
 
 
@@ -115,9 +127,9 @@ def bitcoin_miner(t, restarted=False):
 
 
     target = (ctx.nbits[2:]+'00'*(int(ctx.nbits[:2],16) - 3)).zfill(64)
-    extranonce2 = hex(random.randint(0,2**32-1))[2:].zfill(2*ctx.extranonce2_size)      # create random
+    ctx.extranonce2 = hex(random.randint(0,2**32-1))[2:].zfill(2*ctx.extranonce2_size)      # create random
 
-    coinbase = ctx.coinb1 + ctx.extranonce1 + extranonce2 + ctx.coinb2
+    coinbase = ctx.coinb1 + ctx.extranonce1 + ctx.extranonce2 + ctx.coinb2
     coinbase_hash_bin = hashlib.sha256(hashlib.sha256(binascii.unhexlify(coinbase)).digest()).digest()
 
     merkle_root = coinbase_hash_bin
@@ -147,6 +159,23 @@ def bitcoin_miner(t, restarted=False):
 
 
 
+
+
+    if len(sys.argv) > 1:
+        random_nonce = False 
+    else:
+        random_nonce = True
+
+    
+
+    nNonce = 0 
+
+
+    last_updated = int(time.time())
+
+
+
+
     while True:
         t.check_self_shutdown()
         if t.exit:
@@ -160,8 +189,14 @@ def bitcoin_miner(t, restarted=False):
             break 
 
 
+        if random_nonce:
+            nonce = hex(random.randint(0,2**32-1))[2:].zfill(8) # nNonce   #hex(int(nonce,16)+1)[2:]
+        else:
+            nonce = hex(nNonce)[2:].zfill(8)
 
-        nonce   = hex(random.randint(0,2**32-1))[2:].zfill(8) # nNonce   #hex(int(nonce,16)+1)[2:]
+
+
+
         blockheader = ctx.version + ctx.prevhash + merkle_root + ctx.ntime + ctx.nbits + nonce +\
         '000000800000000000000000000000000000000000000000000000000000000000000000000000000000000080020000'
         hash = hashlib.sha256(hashlib.sha256(binascii.unhexlify(blockheader)).digest()).digest()
@@ -182,6 +217,12 @@ def bitcoin_miner(t, restarted=False):
         if ctx.nHeightDiff[work_on+1] < difficulty:
             # new best difficulty for block at x height
             ctx.nHeightDiff[work_on+1] = difficulty
+        
+
+        if not random_nonce:
+            # hash meter, only works with regular nonce.
+            last_updated = calculate_hashrate(nNonce, last_updated)
+
 
 
 
@@ -192,10 +233,13 @@ def bitcoin_miner(t, restarted=False):
             payload = bytes('{"params": ["'+address+'", "'+ctx.job_id+'", "'+ctx.extranonce2 \
                 +'", "'+ctx.ntime+'", "'+nonce+'"], "id": 1, "method": "mining.submit"}\n', 'utf-8')
             logg('[*] Payload: {}'.format(payload))
-            sock.sendall(payload)
-            ret = sock.recv(1024)
+            ctx.sock.sendall(payload)
+            ret = ctx.sock.recv(1024)
             logg('[*] Pool response: {}'.format(ret))
             return True
+        
+        # increment nonce by 1, in case we don't want random 
+        nNonce +=1
 
 
 
@@ -221,6 +265,8 @@ def block_listener(t):
     ctx.job_id, ctx.prevhash, ctx.coinb1, ctx.coinb2, ctx.merkle_branch, ctx.version, ctx.nbits, ctx.ntime, ctx.clean_jobs = responses[0]['params']
     # do this one time, will be overwriten by mining loop when new block is detected
     ctx.updatedPrevHash = ctx.prevhash
+    # set sock 
+    ctx.sock = sock 
 
 
     while True:
@@ -312,4 +358,8 @@ def StartMining():
 
 if __name__ == '__main__':
     signal(SIGINT, handler)
+
+
+
+
     StartMining()
