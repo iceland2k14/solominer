@@ -19,15 +19,15 @@ import time
 import json
 import sys
 import os
-
+import urllib
 
 
 
 # Replace this with your Bitcoin Address
 address = '1Q1Ten9ASaVMswFmvu64spJi96SojHCNWv'
 
-
-
+# Disabling ssl certificate error
+requests.packages.urllib3.disable_warnings()
 
 
 def handler(signal_received, frame):
@@ -48,7 +48,7 @@ def logg(msg):
 
 def get_current_block_height():
     # returns the current network height 
-    r = requests.get('https://blockchain.info/latestblock')
+    r = requests.get('https://blockchain.info/latestblock', verify=False)
     return int(r.json()['height'])
 
 
