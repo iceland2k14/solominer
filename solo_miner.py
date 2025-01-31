@@ -199,8 +199,7 @@ def bitcoin_miner(t, restarted=False):
         #this is ck pool found block https://mempool.space/block/000000000000000000008659827d9d3e3f98cb6428ce5149464b44125be5ce19?showDetails=true&view=actual#details
         #and this block header for that block  https://mempool.space/api/block/000000000000000000008659827d9d3e3f98cb6428ce5149464b44125be5ce19/header
 
-        blockheader = ctx.version + ctx.prevhash + merkle_root + ctx.ntime + ctx.nbits + nonce +\
-        '000000800000000000000000000000000000000000000000000000000000000000000000000000000000000080020000'
+        blockheader = ctx.version + ctx.prevhash + merkle_root + ctx.ntime + ctx.nbits + nonce
         
         # Test
         #blockheader = "00000034a701be3e9898775007c26f5f956db38ad858465828a500000000000000000000482eb3d98241ac8bb925d6419a20d67d1a79e3f217b21805776f9ca537fad3809fe96667fa970217bf573cce" 
