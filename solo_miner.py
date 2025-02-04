@@ -194,15 +194,20 @@ def bitcoin_miner(t, restarted=False):
         else:
             nonce = hex(nNonce)[2:].zfill(8)
 
+        #The standard Bitcoin block header is exactly 80 bytes (not 128).
+        #If you hash an 80-byte input and a 128-byte input, the outputs will differ.
+        #this is ck pool found block https://mempool.space/block/000000000000000000008659827d9d3e3f98cb6428ce5149464b44125be5ce19?showDetails=true&view=actual#details
+        #and this block header for that block  https://mempool.space/api/block/000000000000000000008659827d9d3e3f98cb6428ce5149464b44125be5ce19/header
 
-
-
-        blockheader = ctx.version + ctx.prevhash + merkle_root + ctx.ntime + ctx.nbits + nonce +\
-        '000000800000000000000000000000000000000000000000000000000000000000000000000000000000000080020000'
+        blockheader = ctx.version + ctx.prevhash + merkle_root + ctx.ntime + ctx.nbits + nonce
+        
+        # Test
+        #blockheader = "00000034a701be3e9898775007c26f5f956db38ad858465828a500000000000000000000482eb3d98241ac8bb925d6419a20d67d1a79e3f217b21805776f9ca537fad3809fe96667fa970217bf573cce" 
         hash = hashlib.sha256(hashlib.sha256(binascii.unhexlify(blockheader)).digest()).digest()
         hash = binascii.hexlify(hash).decode()
-
-
+        hash = "".join(reversed([hash[i:i+2] for i in range(0, len(hash), 2)]))
+        # if test blokheader print(hash) 
+        # you will get same hash 000000000000000000008659827d9d3e3f98cb6428ce5149464b44125be5ce19
 
         # Logg all hashes that start with 7 zeros or more
         if hash.startswith('0000000'): logg('[*] New hash: {} for block {}'.format(hash, work_on+1))
